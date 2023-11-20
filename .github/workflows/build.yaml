@@ -12,6 +12,10 @@ env:
   REGISTRY: ghcr.io
   JAVA_VERSION: 17
 
+# We need this to be able to push to the container registry
+permissions:
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
