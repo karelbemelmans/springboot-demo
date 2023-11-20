@@ -31,6 +31,7 @@ jobs:
           ./gradlew clean build
           mkdir -p target/extracted
           java -Djarmode=layertools -jar build/libs/*.jar extract --destination target/extracted
+          tree .
 
       - name: Login to container registry
         uses: docker/login-action@v3
