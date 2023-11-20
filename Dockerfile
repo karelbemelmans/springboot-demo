@@ -2,7 +2,6 @@
 ARG JAVA_VERSION=17
 FROM eclipse-temurin:${JAVA_VERSION}-jre-alpine
 
-VOLUME /tmp
 ARG EXTRACTED=target/extracted
 COPY ${EXTRACTED}/application/ ./
 COPY ${EXTRACTED}/dependencies/ ./
