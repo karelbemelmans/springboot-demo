@@ -42,7 +42,7 @@ jobs:
       - name: Execute Gradle build
         run: |
           ./gradlew jib \
-            -Djib.to.image==${{ env.REGISTRY }}/${{ github.repository }} \
+            -Djib.to.image=${{ env.REGISTRY }}/${{ github.repository }} \
             -Djib.to.tags="${{ steps.meta.outputs.tags }}" \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }}
