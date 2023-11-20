@@ -1,7 +1,12 @@
-name: Run Gradle on PRs
+name: Build and publish
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - "**"
+      - "!dependabot/**"
+  release:
+    types: [created]
 
 env:
   REGISTRY: ghcr.io
