@@ -38,6 +38,6 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.bootBuildImage {
-	builder.set("paketobuildpacks/builder-jammy-base:latest")
+tasks.named<Jar>("jar") {
+	enabled = false
 }
