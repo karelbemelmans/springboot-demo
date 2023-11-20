@@ -2,13 +2,7 @@
 ARG JAVA_VERSION=17
 FROM eclipse-temurin:${JAVA_VERSION}-jre-alpine
 
-ARG EXTRACTED=target/extracted
-COPY ${EXTRACTED}/application/ ./
-COPY ${EXTRACTED}/dependencies/ ./
-COPY ${EXTRACTED}/snapshot-dependencies/ ./
-COPY ${EXTRACTED}/spring-boot-loader/ ./
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
 
-RUN addgroup -S demo && adduser -S demo -G demo
-USER demo
-
-ENTRYPOINT ["java","org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar"]
