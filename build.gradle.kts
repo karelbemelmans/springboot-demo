@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.3"
 	kotlin("jvm") version "1.8.22"
 	kotlin("plugin.spring") version "1.8.22"
+  id("com.google.cloud.tools.jib") version "3.3.1"
 }
 
 group = "com.karelbemelmans"
@@ -40,4 +41,10 @@ tasks.withType<Test> {
 
 tasks.named<Jar>("jar") {
 	enabled = false
+}
+
+jib {
+  from {
+    image = "eclipse-temurin:17-jre-alpine"
+  }
 }
