@@ -27,11 +27,9 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Execute Gradle build
-        run: ./gradlew clean build
-
-      - name: Execute Gradle build
         run: |
-          mkdir target/extracted
+          ./gradlew clean build
+          mkdir -p target/extracted
           java -Djarmode=layertools -jar build/libs/*.jar extract --destination target/extracted
 
       - name: Login to container registry
