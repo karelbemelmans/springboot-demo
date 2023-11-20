@@ -19,13 +19,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Login to container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: actions/setup-java@v3
         with:
           distribution: temurin
@@ -49,5 +42,7 @@ jobs:
       - name: Execute Gradle build
         run: |
           ./gradlew jib \
-            --image=${{ env.REGISTRY }}/${{ github.repository }} \
-            --tags=${{ steps.meta.outputs.tags }}
+            -Djib.to.image==${{ env.REGISTRY }}/${{ github.repository }} \
+            -Djib.to.tags="${{ steps.meta.outputs.tags }}" \
+            -Djib.to.auth.username=${{ github.actor }} \
+            -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }}
