@@ -42,5 +42,6 @@ jobs:
       - name: Execute Gradle build
         run: |
           ./gradlew jib \
+            -Djib.console=plain \
             -Djib.to.image=${{ env.REGISTRY }}/${{ github.repository }} \
             -Djib.to.tags="${{ github.sha }}"
