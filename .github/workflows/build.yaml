@@ -13,7 +13,7 @@ env:
   JAVA_VERSION: 17
 
 jobs:
-  gradle:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
