@@ -5,7 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.3"
 	kotlin("jvm") version "1.8.22"
 	kotlin("plugin.spring") version "1.8.22"
-  id("com.google.cloud.tools.jib") version "3.3.1"
+  id("com.google.cloud.tools.jib") version "3.4.0"
 }
 
 group = "com.karelbemelmans"

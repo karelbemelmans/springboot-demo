@@ -35,7 +35,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      # TODO: tags
-      - name: Execute Gradle jib
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern=v{{version}}
+            type=sha
+
+      - name: Execute Gradle build
         run: |
-          ./gradlew jib --image=${{ env.REGISTRY }}/${{ github.repository }}
+          ./gradlew jib \
+            --image=${{ env.REGISTRY }}/${{ github.repository }} \
+            --tags=${{ steps.meta.outputs.tags }}
