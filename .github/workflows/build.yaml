@@ -42,7 +42,7 @@ jobs:
       - name: Execute Gradle build
         run: |
           ./gradlew clean build
-          tree build/libs
+          tree .
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -60,6 +60,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
+          context: .
           build-args: |
             JAVA_VERSION=${{env.JAVA_VERSION}}
           tags: ${{ steps.meta.outputs.tags }}
