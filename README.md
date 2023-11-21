@@ -3,12 +3,22 @@
 This demo uses:
 
 - Springboot with Kotlin and Gradle
-- Github actions to build a container using the normal `gradle build` method
+- The standard `gradle build` with Java installed on the build agent
+- Pack the final jar in a Docker image with `docker/metadata-action` and `docker/build-push-action`
 
-## Why use gradle build and a manual Docker build?
+More stuff that I will pack into this repository over time:
 
-- Jib does not work use the docker/metadata action, which I love.
-- Same for Spring Boot Plugin building
+- CDK infrastructure
+- Deployment workflow(s)
+- Datadog service catalog update on deployment
+
+## Why not Jib?
+
+It's not easy to use the docker Github actions with the Jib build. I especially like the metadata action that does all the tagging for me.
+
+## Why not Spring Boot Docker build?
+
+Same reason as Jib basically, the Github actions are too nice to use.
 
 ## References
 
