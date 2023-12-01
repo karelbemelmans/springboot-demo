@@ -41,8 +41,7 @@ jobs:
 
       - name: Execute Gradle build
         run: |
-          ./gradlew clean build
-          tree .
+          ./gradlew bootJar
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta

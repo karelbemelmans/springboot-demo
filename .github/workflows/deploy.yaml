@@ -1,0 +1,79 @@
+# Deployment of an ECS service by updating the task definition used by the service.
+# This is the correct way of using the ECS deployment system.
+#
+# Pros:
+# - The correct way to handle ECS deployments
+# - Waits for deployment result
+# - Task-definition can be enriched in Github actions if needed
+# - It's still better than deploying with actual CDK deploys (or even worse Terraform)
+#
+# Cons:
+# - Github actions competes with the CDK created task definition. We solve that
+#   in this setup by first downloading the task definition, enrich it and then
+#   upload it again. But ideally we could have the task definition in our
+#   repository and use that as the source of truth.
+#   CDK needs to be altered to ream that same task definition then, which might
+#   be an issue.
+#
+
+name: Deploy
+run-name: Deploy - ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: "eu-north-1"
+  CLUSTER: ""
+  SERVICE: ""
+  TASK_DEFINITION: ""
+  SLACK_CHANNEL: "https://hooks.slack.com/services/..."
+  TEAM: "R&D"
+  EMAIL: "user@example.org"
+
+jobs:
+  deploy:
+    name: Deploy to ECS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Download the current task definition
+      # Use jq to clean up fields we should not pass back in
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.TASK_DEFINITION }} \
+            --query taskDefinition \
+            --output json \
+            | jq '. | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' \
+            > task-definition.json
+
+      # Update the task definition with the newly built Docker image
+      - name: Update ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ./task-definition.json
+          container-name: web
+          image: "ghcr.io/${{ github.repository }}:${{ github.ref_name }}"
+          environment-variables: |
+            DD_VERSION=${{ github.ref_name }}
+            DD_TAGS=git.commit.sha:${{ github.sha }},git.repository_url:github.com/${{ github.repository }}
+
+      - name: ECS deploy
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.SERVICE }}
+          cluster: ${{ env.CLUSTER }}
+          wait-for-service-stability: true
