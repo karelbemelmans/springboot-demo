@@ -1,6 +1,11 @@
 {
+  "devDependencies": {
+    "aws-cdk": "2.163.1",
+    "ts-node": "^10.9.2",
+    "typescript": "5.6.3"
+  },
   "dependencies": {
-    "aws-cdk-lib": "2.110.0",
-    "constructs": "^10.3.0"
+    "aws-cdk-lib": "2.163.1",
+    "constructs": "^10.4.2"
   }
 }
